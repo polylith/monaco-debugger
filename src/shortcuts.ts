@@ -36,7 +36,7 @@ export class Shortcuts {
         Object.keys(this.shortcuts).forEach((key) => {
             const action = key as keyof IDebugShortcuts;
             const keycodes = this.shortcuts[action].split(" + ");
-            let condition: boolean = true;
+            let condition = true;
             keycodes.forEach((keycode) => {
                 if (keycode === "ctrl") {
                     condition = event.ctrlKey && condition;

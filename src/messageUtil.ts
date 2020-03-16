@@ -71,7 +71,7 @@ export class MessageUtil {
         const messages: string[] = [];
         while (data.length > 20) {
             const header: string = data.split(DOUBLE_CLRF)[0];
-            const messageSize: number = Number(header.split(HEADER_STRING)[1]);
+            const messageSize = Number(header.split(HEADER_STRING)[1]);
             data = data.replace(header + DOUBLE_CLRF, "");
             messages.push(data.substr(0, messageSize));
             data = data.substr(messageSize, data.length - messageSize);

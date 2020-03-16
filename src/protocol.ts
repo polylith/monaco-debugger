@@ -2,7 +2,7 @@ import { DebugProtocol } from "vscode-debugprotocol";
 import { IBreakpoint } from "./breakpoints";
 const DOUBLE_CLRF = "\r\n\r\n";
 export class Protocol {
-    private seqence: number = 1;
+    private seqence = 1;
     private language: string;
 
     constructor(language: string) {
