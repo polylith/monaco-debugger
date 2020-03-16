@@ -28,6 +28,7 @@
   "author": "Ron Gruse (DelphiXE5)",
   "license": "GNU GPLv3",
   "dependencies": {
+    "minimist": "^1.2.5",
     "monaco-editor-core": "^0.20.0",
     "typescript": "^3.8.3",
     "vscode-debugprotocol": "^1.39.0"
