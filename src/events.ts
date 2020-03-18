@@ -14,6 +14,7 @@ export interface IButtonEvents {
     varOpen?: ButtonFunctionArray;
     varClose?: ButtonFunctionArray;
     restart?: ButtonFunctionArray;
+    resize?: ButtonFunctionArray;
 }
 
 export interface IEventEvents {
@@ -132,7 +133,6 @@ export class DebugEvents implements IEvent {
             this.responseEventListeners[responseState]?.forEach((listener) => listener(resp));
         }
         if (type === "button") {
-            console.log("Button clicked", action);
             this.buttonEventListeners[action as keyof IButtonEvents]?.forEach((listener) => listener(object, data));
         }
     }

@@ -164,4 +164,8 @@ export default class Debugger {
         }
         return false;
     }
+
+    public on(type: "resize", listener: (element?: HTMLElement, data?: any) => {}): void{
+        this.events.on("button", "resize", listener);
+    }
 }

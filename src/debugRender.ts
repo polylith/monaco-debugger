@@ -464,6 +464,7 @@ export class Renderer {
         const box: DOMRect = element.getBoundingClientRect();
         const dx = event.x - box.left;
         element.style.width = dx - 10 + "px";
+        this.events.process("button", "resize", this.domElement, {width: box.width, height: box.height});
     }
 
     addResizeToElement(listen: HTMLElement, resize: HTMLElement, direction: "h" | "v") {
