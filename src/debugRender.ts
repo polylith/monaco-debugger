@@ -2,10 +2,7 @@
 import { DebugProtocol } from "vscode-debugprotocol";
 import { DebugEvents, IButtonEvents } from "./events";
 
-// TODO: Add custom styling by export interface for styling
-// TODO: Implement basic templates
-
-interface IStyle {
+export interface IStyle {
     margin?: string;
     padding?: string;
     color?: string;
@@ -25,45 +22,165 @@ interface IStyle {
     transform?: string;
     "white-space"?: string;
     "box-sizing"?: string;
+    float?: string;
 }
 
-export interface IThemeStyle {
-    name: "drawer.head" | "drawer.body" | "toolbox";
-    color?: string;
-    background?: string;
-    "font-family"?: string;
-    "font-size"?: string;
+export interface IDebuggerThemeRules {
+    "container"?: IStyle;
+    "container.resize": IStyle;
+    "drawer.head": IStyle;
+    "drawer.body": IStyle;
+    "drawer.footer": IStyle;
+    "toolbox"?: IStyle;
+    "toolbox.button": IStyle;
+    "drawer.callstack"?: IStyle;
+    "drawer.variables": IStyle;
+    "drawer.variables.name"?: IStyle["color"];
+    "drawer.variables.string"?: IStyle["color"];
+    "drawer.variables.object"?: IStyle["color"];
+    "drawer.variables.int"?: IStyle["color"];
+    "drawer.variables.boolean"?: IStyle["color"];
+    "drawer.variables.default"?: IStyle["color"];
+    "drawer.variables.arrow": IStyle["color"];
 }
 
 export interface IDebuggerTheme {
     name: string;
-    base?: "vs-dark" | "vs";
-    rules: IThemeStyle[];
+    rules: IDebuggerThemeRules;
 }
 
-class ThemeVSDark implements IDebuggerTheme {
-    "name": "vs-dark";
-    "rules": [
-        {
-            name: "drawer.head";
-            background: "#3e3e3e";
-            color: "white";
-            "font-family": "Consolas, 'Courier New', monospace";
-            "font-size": "14px";
+export class ThemeVSDark implements IDebuggerTheme {
+    public name = "vs-dark";
+    public rules: IDebuggerThemeRules = {
+        "container": {
+            background: "#1e1e1e"
         },
-        {
-            name: "drawer.body";
-            background: "#1e1e1e";
-            color: "white";
-            "font-family": "Consolas, 'Courier New', monospace";
-            "font-size": "14px";
+        "container.resize": {
+            float: "left",
+            width: "4px",
+            height: "100%",
+            cursor: "w-resize",
+            background: "#3e3e3e"
         },
-        {
-            name: "toolbox";
-            background: "#1e1e1e";
-            color: "white";
-        }
-    ];
+        "drawer.head": {
+            background: "#3e3e3e",
+            color: "white",
+            width: "100%",
+            padding: "5px 20px",
+            margin: "0px",
+            "font-size": "14px",
+            "box-sizing": "border-box"
+        },
+        "drawer.body": {
+            background: "#1e1e1e",
+            color: "white",
+            padding: "5px 0px",
+            height: "300px",
+            margin: "0px",
+            width: "100%",
+            overflow: "hidden auto",
+            "white-space": "nowrap",
+        },
+        "drawer.footer": {
+            cursor: "ns-resize", 
+            height: "4px", 
+            background: "#1f1f1f"
+        },
+        "drawer.variables": {
+            "list-style-type": "none",
+            color: "white",
+            padding: "0 0 0 10px",
+            "font-size": "14px",
+            "line-height": "1.5em",
+            margin: "0 0 0 0",
+            "font-family": "Consolas, 'Courier New', monospace",
+        },
+        "toolbox": {
+            background: "#1e1e1e",
+            color: "white",
+        },
+        "toolbox.button": {
+            color: "#329998",
+            border: "0px solid #329998",
+            width: "30px",
+            height: "30px",
+            margin: "5px",
+        },
+        "drawer.variables.name": "violet",
+        "drawer.variables.string": "orange",
+        "drawer.variables.object": "white",
+        "drawer.variables.int": "lightgreen",
+        "drawer.variables.boolean": "yellow",
+        "drawer.variables.default": "lightblue",
+        "drawer.variables.arrow": "white"
+    };
+}
+
+export class ThemeVSLight implements IDebuggerTheme {
+    public name = "vs-light";
+    public rules: IDebuggerThemeRules = {
+        "container": {
+            background: "#fffffe"
+        },
+        "container.resize": {
+            float: "left",
+            width: "4px",
+            height: "100%",
+            cursor: "w-resize",
+            background: "#eeeeee"
+        },
+        "drawer.head": {
+            background: "#eeeeee",
+            color: "black",
+            width: "100%",
+            padding: "5px 20px",
+            margin: "0px",
+            "font-size": "14px",
+            "box-sizing": "border-box"
+        },
+        "drawer.body": {
+            background: "#fffffe",
+            color: "black",
+            padding: "5px 0px",
+            height: "300px",
+            margin: "0px",
+            width: "100%",
+            overflow: "hidden auto",
+            "white-space": "nowrap",
+        },
+        "drawer.footer": {
+            cursor: "ns-resize", 
+            height: "4px", 
+            background: "#fffffe"
+        },
+        "drawer.variables": {
+            "list-style-type": "none",
+            color: "black",
+            padding: "0 0 0 10px",
+            "font-size": "14px",
+            "line-height": "1.5em",
+            margin: "0 0 0 0",
+            "font-family": "Consolas, 'Courier New', monospace",
+        },
+        "toolbox": {
+            background: "#1e1e1e",
+            color: "white",
+        },
+        "toolbox.button": {
+            color: "#329998",
+            border: "0px solid #329998",
+            width: "30px",
+            height: "30px",
+            margin: "5px",
+        },
+        "drawer.variables.name": "darkviolet",
+        "drawer.variables.string": "darkorange",
+        "drawer.variables.object": "white",
+        "drawer.variables.int": "green",
+        "drawer.variables.boolean": "yellow",
+        "drawer.variables.default": "lightblue",
+        "drawer.variables.arrow": "grey"
+    };
 }
 
 interface IDrawer {
@@ -74,13 +191,6 @@ interface IDrawer {
 
 class Styles {
     static disabled: IStyle = { filter: "grayscale(100%) brightness(80%); cursor: inherit" };
-    static toolboxButton: IStyle = {
-        color: "#329998",
-        border: "0px solid #329998",
-        width: "30px",
-        height: "30px",
-        margin: "5px",
-    };
     static button: IStyle = {
         color: "black",
         margin: "0px 30px",
@@ -93,35 +203,6 @@ class Styles {
         background: "none",
     };
     static wrapper: IStyle = { margin: "8px auto", width: "fit-content" };
-    static drawerHead: IStyle = {
-        background: "#3e3e3e",
-        color: "white",
-        width: "100%",
-        padding: "5px 20px",
-        margin: "0px",
-        "font-size": "14px",
-        "box-sizing": "border-box"
-    };
-    static drawerContent: IStyle = {
-        background: "#1e1e1e",
-        color: "white",
-        padding: "5px 0px",
-        height: "300px",
-        margin: "0px",
-        width: "calc(100%)",
-        overflow: "hidden auto",
-        "white-space": "nowrap",
-    };
-    static variablesList: IStyle = {
-        "list-style-type": "none",
-        color: "white",
-        padding: "0 0 0 10px",
-        "font-size": "14px",
-        "line-height": "1.5em",
-        margin: "0 0 0 0",
-        "font-family": "Consolas, 'Courier New', monospace",
-    };
-    static drawerFooter: IStyle = { cursor: "ns-resize", height: "4px", background: "#1f1f1f" };
 }
 
 class Media {
@@ -130,8 +211,8 @@ class Media {
     static stepOverSvg = `<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" viewBox="0 -75 215 215"><defs><style>.step-1{fill:#9cb5de;}.step-2{fill:#0071bc;}</style></defs><g id="Ebene_2" data-name="Ebene 2"><g id="Ebene_1-2" data-name="Ebene 1"><path class="step-1" d="M4.39,55.13a15,15,0,0,0,20,1.07,120,120,0,0,1,159.71,9l21.21-21.22A150,150,0,0,0,5.69,32.75,15,15,0,0,0,4.38,55.13Z"/><path class="step-2" d="M214,52.47,188,7.52a10,10,0,0,0-17.32,0L144.75,52.44a10,10,0,0,0,8.66,15l51.91,0A10,10,0,0,0,214,52.47Z"/><circle class="step-2" cx="99.25" cy="83" r="25"/></g></g></svg>`;
     static restartSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><defs><style>.restart-1{fill:#93ca7a;}.restart-2{fill:#399d0b;}</style></defs><g id="Ebene_2" data-name="Ebene 2"><g id="Ebene_1-2" data-name="Ebene 1"><path class="restart-1" d="M89.22,20.27v27c35.61,0,64.38,29,63.53,64.43-.8,33.36-28.28,60.57-62,61.36A63.41,63.41,0,0,1,27,122.84a13.58,13.58,0,0,0-13.36-10.76h0A13.52,13.52,0,0,0,.28,128.23C8.74,169.19,45.34,200,89.22,200c50.19,0,91.09-40.75,90.78-90.44C179.69,60.19,139.16,20.27,89.22,20.27Z"/><path class="restart-2" d="M89.22,20.27v27c35.09,0,63.55,28.16,63.55,62.91a62.41,62.41,0,0,1-18.62,44.48l19.26,19.06A89.12,89.12,0,0,0,180,110.14C180,60.5,139.36,20.27,89.22,20.27Z"/><path class="restart-2" d="M37,44.61,82,70.54a10,10,0,0,0,15-8.67V10A10,10,0,0,0,82,1.35L37,27.28A10,10,0,0,0,37,44.61Z"/></g></g></svg>`;
     static stopSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><defs><style>.cls-1{fill:#ca0707;}.cls-2{fill:#c38383;}</style></defs><g id="Ebene_2" data-name="Ebene 2"><g id="Ebene_1-2" data-name="Ebene 1"><path class="cls-1" d="M15,0H185a15,15,0,0,1,15,15V30a0,0,0,0,1,0,0H0a0,0,0,0,1,0,0V15A15,15,0,0,1,15,0Z"/><path class="cls-1" d="M100,85H270a15,15,0,0,1,15,15v15a0,0,0,0,1,0,0H85a0,0,0,0,1,0,0V100A15,15,0,0,1,100,85Z" transform="translate(285 -85) rotate(90)"/><path class="cls-2" d="M0,15V185a15,15,0,0,0,15,15H30V30L4.39,4.39A15,15,0,0,0,0,15Z"/><path class="cls-2" d="M170,170H0v15a15,15,0,0,0,15,15H185a15,15,0,0,0,10.61-4.39Z"/></g></g></svg>`;
-    static rightArrow = `<svg id="Ebene_1" data-name="Ebene 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 9.15 16" width="7" style="padding-right: 12px; padding-top: 2px;"><defs><style>.c-1{fill:white;}</style></defs><path class="c-1" d="M8.82,8.76,2,15.67a1.12,1.12,0,0,1-1.59,0,1.11,1.11,0,0,1,0-1.58L6.44,8,.33,1.92A1.12,1.12,0,0,1,.33.33a1.11,1.11,0,0,1,1.58,0l6.9,6.85A1.16,1.16,0,0,1,9.15,8a1.11,1.11,0,0,1-.33.79" transform="translate(0 0)"/></svg>`;
-    static downArrow = `<svg id="Ebene_1" data-name="Ebene 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 9.15" width="12.24" style="padding-right: 7px;"><defs><style>.c-2{fill:white;}</style></defs><path class="c-2" d="M7.24,8.82.33,2A1.12,1.12,0,0,1,.33.38a1.11,1.11,0,0,1,1.58,0L8,6.44,14.08.33a1.12,1.12,0,0,1,1.59,0,1.11,1.11,0,0,1,0,1.58L8.82,8.81A1.16,1.16,0,0,1,8,9.15a1.11,1.11,0,0,1-.79-.33"/></svg>`;
+    static rightArrow = `<svg id="Ebene_1" data-name="Ebene 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 9.15 16" width="7" style="padding-right: 12px; padding-top: 2px;"><defs><style>.c-1{fill:grey;}</style></defs><path class="c-1" d="M8.82,8.76,2,15.67a1.12,1.12,0,0,1-1.59,0,1.11,1.11,0,0,1,0-1.58L6.44,8,.33,1.92A1.12,1.12,0,0,1,.33.33a1.11,1.11,0,0,1,1.58,0l6.9,6.85A1.16,1.16,0,0,1,9.15,8a1.11,1.11,0,0,1-.33.79" transform="translate(0 0)"/></svg>`;
+    static downArrow = `<svg id="Ebene_1" data-name="Ebene 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 9.15" width="12.24" style="padding-right: 7px;"><defs><style>.c-2{fill:grey;}</style></defs><path class="c-2" d="M7.24,8.82.33,2A1.12,1.12,0,0,1,.33.38a1.11,1.11,0,0,1,1.58,0L8,6.44,14.08.33a1.12,1.12,0,0,1,1.59,0,1.11,1.11,0,0,1,0,1.58L8.82,8.81A1.16,1.16,0,0,1,8,9.15a1.11,1.11,0,0,1-.79-.33"/></svg>`;
 }
 
 const globalstyle = `
@@ -189,17 +270,19 @@ export class Renderer {
     editor: monaco.editor.IStandaloneCodeEditor;
     toolbox: HTMLElement;
     events: DebugEvents;
-    theme: IDebuggerTheme = new ThemeVSDark();
+    theme: IDebuggerTheme = new ThemeVSLight();
     constructor(domElement: HTMLElement, editor: monaco.editor.IStandaloneCodeEditor, events: DebugEvents, theme?: IDebuggerTheme) {
         this.domElement = domElement;
         this.editor = editor;
         this.events = events;
         this.domElement.innerHTML = "";
         document.head.appendChild(this.renderElement("style", undefined, globalstyle));
-        this.domElement.setAttribute("style", this.domElement.getAttribute("style") + "background: #1e1e1e");
-        if (theme) this.theme = theme;
+        if (theme)
+            this.theme = theme;
+        if (this.theme.rules.container)
+            this.domElement.setAttribute("style", this.buildStyle(this.theme.rules.container) + this.domElement.getAttribute("style"));
         const wrapper = this.renderElement("div", "float: left; width: calc( 100% - 4px);");
-        const border = this.renderElement("div", "float: left; width: 4px; height: 100%; cursor: w-resize; background: #3e3e3e;");
+        const border = this.renderElement("div", this.buildStyle(this.theme.rules["container.resize"]));
         this.toolbox = this.renderToolbox();
         wrapper.appendChild(this.toolbox);
         wrapper.appendChild(this.renderDrawer("<b>VARIABLES</b>"));
@@ -207,21 +290,22 @@ export class Renderer {
         this.domElement.appendChild(wrapper);
         this.domElement.appendChild(border);
         this.addResizeToElement(border, this.domElement, "h");
+        console.log(this.theme);
     }
 
     updateToolbox(action: keyof IButtonEvents, object?: HTMLElement) {
         switch (action) {
             case "start":
-                const continu = this.renderButton(Media.continueSvg, "continue", Styles.toolboxButton);
+                const continu = this.renderButton(Media.continueSvg, "continue", this.theme.rules["toolbox.button"]);
                 if (this.toolbox.firstChild) this.toolbox.replaceChild(continu, this.toolbox.firstChild);
                 else if (object) this.toolbox.replaceChild(continu, object);
                 this.toolbox.childNodes.forEach((child) => {
-                    (child as HTMLElement).setAttribute("style", this.buildStyle(Styles.button, false, Styles.toolboxButton));
+                    (child as HTMLElement).setAttribute("style", this.buildStyle(Styles.button, false, this.theme.rules["toolbox.button"]));
                     (child as HTMLElement).removeAttribute("disabled");
                 });
                 break;
             case "stop":
-                const start = this.renderButton(Media.startSvg, "start", Styles.toolboxButton);
+                const start = this.renderButton(Media.startSvg, "start", this.theme.rules["toolbox.button"]);
                 if (this.toolbox.firstChild) {
                     this.toolbox.replaceChild(start, this.toolbox.firstChild);
                     this.toolbox.childNodes.forEach((child) => {
@@ -229,7 +313,7 @@ export class Renderer {
                             (child as HTMLElement).setAttribute(
                                 "style",
                                 this.buildStyle(Styles.button, false, {
-                                    ...Styles.toolboxButton,
+                                    ...this.theme.rules["toolbox.button"],
                                     ...Styles.disabled,
                                 })
                             );
@@ -286,7 +370,7 @@ export class Renderer {
         const elem = this.removeEventListeners(element);
         elem.appendChild(this.renderVariables(varObject));
         if (elem.firstChild) {
-            const arrow = this.renderElement("span", "", Media.downArrow);
+            const arrow = this.renderElement("span", "", Media.downArrow.replace(".c-2{fill:grey;}", ".c-2{fill:" +  this.theme.rules["drawer.variables.arrow"] || "white" + ";}"));
             elem.replaceChild(arrow, elem.firstChild);
             arrow.addEventListener("click", () => this.events.process("button", "varClose", elem));
         }
@@ -297,7 +381,7 @@ export class Renderer {
             element.getElementsByTagName("ul")[0].remove();
             const elem = this.removeEventListeners(element);
             if (elem.firstChild) {
-                const arrow = this.renderElement("span", "", Media.rightArrow);
+                const arrow = this.renderElement("span", "", Media.rightArrow.replace(".c-1{fill:grey;}", ".c-1{fill:" +  this.theme.rules["drawer.variables.arrow"] || "white" + ";}"));
                 elem.replaceChild(arrow, elem.firstChild);
                 arrow.addEventListener("click", () => this.events.process("button", "varOpen", elem, Number(elem.getAttribute("varRef"))));
             }
@@ -305,30 +389,30 @@ export class Renderer {
     }
 
     renderVariables(varObject: DebugProtocol.Variable[]): HTMLElement {
-        const list = this.renderElement("ul", this.buildStyle(Styles.variablesList));
+        const list = this.renderElement("ul", this.buildStyle(this.theme.rules["drawer.variables"]));
         varObject.forEach((variable) => {
             const listentry = this.renderElement("li");
             if (variable.variablesReference !== 0) {
-                const arrow = this.renderElement("span", "", Media.rightArrow);
+                const arrow = this.renderElement("span", "", Media.rightArrow.replace(".c-1{fill:grey;}", ".c-1{fill:" +  this.theme.rules["drawer.variables.arrow"] || "white" + ";}"));
                 listentry.appendChild(arrow);
                 arrow.addEventListener("click", () => this.events.process("button", "varOpen", listentry, variable.variablesReference));
                 listentry.setAttribute("varRef", variable.variablesReference.toString());
             } else {
                 listentry.append(this.renderElement("span", this.buildStyle({ margin: "0 0 0 20px" })));
             }
-            listentry.appendChild(this.renderElement("span", this.buildStyle({ color: "violet" }), variable.name + ": "));
+            listentry.appendChild(this.renderElement("span", this.buildStyle({ color: this.theme.rules["drawer.variables.name"] }), variable.name + ": "));
             switch (variable.type) {
                 case "string":
-                    listentry.appendChild(this.renderElement("span", this.buildStyle({ color: "orange" }), variable.value));
+                    listentry.appendChild(this.renderElement("span", this.buildStyle({ color: this.theme.rules["drawer.variables.string"] }), variable.value));
                     break;
                 case "object":
-                    listentry.appendChild(this.renderElement("span", this.buildStyle({ color: "white" }), variable.value));
+                    listentry.appendChild(this.renderElement("span", this.buildStyle({ color: this.theme.rules["drawer.variables.object"] }), variable.value));
                     break;
                 case "int":
-                    listentry.appendChild(this.renderElement("span", this.buildStyle({ color: "lightgreen" }), variable.value));
+                    listentry.appendChild(this.renderElement("span", this.buildStyle({ color: this.theme.rules["drawer.variables.int"] }), variable.value));
                     break;
                 default:
-                    listentry.appendChild(this.renderElement("span", this.buildStyle({ color: "lightblue" }), variable.value));
+                    listentry.appendChild(this.renderElement("span", this.buildStyle({ color: this.theme.rules["drawer.variables.default"] }), variable.value));
                     break;
             }
             list.appendChild(listentry);
@@ -341,7 +425,7 @@ export class Renderer {
     }
 
     renderStackFrames(stackObject: DebugProtocol.StackFrame[]): HTMLElement {
-        const list = this.renderElement("ul", this.buildStyle(Styles.variablesList, false, { padding: "0px 20px" }));
+        const list = this.renderElement("ul", this.buildStyle(this.theme.rules["drawer.variables"], false, { padding: "0px 20px" }));
         stackObject.forEach((stackFrame) => {
             const listentry = this.renderElement("li");
             listentry.innerHTML = stackFrame.name + " at line " + stackFrame.line;
@@ -352,23 +436,23 @@ export class Renderer {
 
     renderToolbox() {
         const wrapper = this.renderWrapper();
-        const start = this.renderButton(Media.startSvg, "start", Styles.toolboxButton);
+        const start = this.renderButton(Media.startSvg, "start", this.theme.rules["toolbox.button"]);
         wrapper.appendChild(start);
         this.on("start", () => this.updateToolbox.call(this, "start", start));
-        wrapper.appendChild(this.renderButton(Media.stepOverSvg, "stepOver", { ...Styles.toolboxButton, ...Styles.disabled }, true));
-        wrapper.appendChild(this.renderButton(Media.restartSvg, "restart", { ...Styles.toolboxButton, ...Styles.disabled }, true));
-        wrapper.appendChild(this.renderButton(Media.stopSvg, "stop", { ...Styles.toolboxButton, ...Styles.disabled }, true));
+        wrapper.appendChild(this.renderButton(Media.stepOverSvg, "stepOver", { ...this.theme.rules["toolbox.button"], ...Styles.disabled }, true));
+        wrapper.appendChild(this.renderButton(Media.restartSvg, "restart", { ...this.theme.rules["toolbox.button"], ...Styles.disabled }, true));
+        wrapper.appendChild(this.renderButton(Media.stopSvg, "stop", { ...this.theme.rules["toolbox.button"], ...Styles.disabled }, true));
         return wrapper;
     }
 
     renderDrawer(name: string, content?: HTMLElement) {
         const wrapper = this.renderWrapper({ width: "100%" }, true);
-        const header = this.renderWrapper(Styles.drawerHead);
-        const footer = this.renderElement("div", this.buildStyle(Styles.drawerFooter));
+        const header = this.renderWrapper(this.theme.rules["drawer.head"]);
+        const footer = this.renderElement("div", this.buildStyle(this.theme.rules["drawer.footer"]));
         const nameTag = this.renderElement("p", this.buildStyle({ margin: "0px" }), name);
         nameTag.classList.add("noselect");
         header.appendChild(nameTag);
-        const contentWrapper = this.renderWrapper(Styles.drawerContent);
+        const contentWrapper = this.renderWrapper(this.theme.rules["drawer.body"]);
         contentWrapper.setAttribute("class", "drawer-content");
         if (content) {
             contentWrapper.appendChild(content);
@@ -386,7 +470,7 @@ export class Renderer {
 
     foldDrawer(drawer: IDrawer) {
         if (drawer.fold) {
-            drawer.content.setAttribute("style", this.buildStyle(Styles.drawerContent));
+            drawer.content.setAttribute("style", this.buildStyle(this.theme.rules["drawer.body"]));
             drawer.fold = false;
         } else {
             drawer.content.setAttribute("style", "display: none;");
@@ -464,7 +548,7 @@ export class Renderer {
         const box: DOMRect = element.getBoundingClientRect();
         const dx = event.x - box.left;
         element.style.width = dx - 10 + "px";
-        this.events.process("button", "resize", this.domElement, {width: box.width, height: box.height});
+        this.events.process("button", "resize", this.domElement, { width: box.width, height: box.height });
     }
 
     addResizeToElement(listen: HTMLElement, resize: HTMLElement, direction: "h" | "v") {
@@ -476,7 +560,7 @@ export class Renderer {
                 document.onmousemove = (event) => this.resizeVertical.call(this, event, resize);
             }
             document.onmouseup = () => {
-                document.onmousemove = () => {};
+                document.onmousemove = () => { };
             };
         });
     }

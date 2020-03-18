@@ -1,6 +1,6 @@
 {
   "name": "monaco-debugger",
-  "version": "0.0.6",
+  "version": "0.0.8",
   "description": "This is a webclient for the microsoft debug adapter.",
   "main": "dist/debugger.js",
   "types": "dist/debugger.d.ts",

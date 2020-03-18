@@ -1,13 +1,16 @@
 /// <reference types="./editor/monaco" />
 import { Breakpoints } from "./breakpoints";
-import { IDebugConnection } from "./debugConnection";
+import { IDebugConnection, WebsocketConnection } from "./debugConnection";
 import { Protocol } from "./protocol";
 import { DebugProtocol } from "vscode-debugprotocol";
-import { Renderer } from "./debugRender";
+import { Renderer, IDebuggerTheme, ThemeVSLight, ThemeVSDark } from "./debugRender";
 import { MessageUtil } from "./messageUtil";
 import { DebugEvents } from "./events";
 import { ThreadWatcher } from "./serverState";
 import { Shortcuts, IDebugShortcuts } from "./shortcuts";
+
+export { IDebuggerTheme , ThemeVSLight, ThemeVSDark}
+export { IDebugConnection, WebsocketConnection}
 
 export default class Debugger {
     public breakpoints: Breakpoints;
@@ -30,7 +33,7 @@ export default class Debugger {
             debugArguments: object;
             language: string;
             shortcuts?: IDebugShortcuts | boolean;
-            theme?: string;
+            theme?: IDebuggerTheme;
         }
     ) {
         // Set arguments to attributes
@@ -44,7 +47,7 @@ export default class Debugger {
         this.events = new DebugEvents();
         this.shortcuts = new Shortcuts(this.events);
         this.threads = new ThreadWatcher();
-        this.renderer = new Renderer(domElement, this.editor, this.events);
+        this.renderer = new Renderer(domElement, this.editor, this.events, options.theme);
         this.messageUtil = new MessageUtil(this.events);
 
         // Enable Shortcuts based on options in contructor
@@ -166,6 +169,7 @@ export default class Debugger {
     }
 
     public on(type: "resize", listener: (element?: HTMLElement, data?: any) => {}): void{
+        console.log("resizer");
         this.events.on("button", "resize", listener);
     }
 }
