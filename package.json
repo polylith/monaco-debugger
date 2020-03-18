@@ -1,6 +1,6 @@
 {
   "name": "monaco-debugger",
-  "version": "0.0.2",
+  "version": "0.0.5",
   "description": "This is a webclient for the microsoft debug adapter.",
   "main": "dist/debugger.js",
   "types": "dist/debugger.d.ts",
@@ -26,10 +26,8 @@
   },
   "homepage": "https://github.com/polylith/monacho-debugger#readme",
   "author": "Ron Gruse (DelphiXE5)",
-  "license": "GNU GPLv3",
+  "license": "GPL-3.0",
   "dependencies": {
-    "monaco-editor-core": "^0.20.0",
-    "typescript": "^3.8.3",
     "vscode-debugprotocol": "^1.39.0"
   },
   "devDependencies": {
@@ -37,7 +35,8 @@
     "@typescript-eslint/parser": "^2.23.0",
     "eslint": "^6.8.0",
     "prettier": "^1.19.1",
-    "tslint-config-prettier": "^1.18.0"
+    "tslint-config-prettier": "^1.18.0",
+    "typescript": "^3.8.3"
   },
   "files": [
     "dist/**/*"

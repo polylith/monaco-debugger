@@ -1,4 +1,4 @@
-import * as monaco from "monaco-editor-core";
+/// <reference types="./editor/monaco" />
 import { DebugProtocol } from "vscode-debugprotocol";
 
 export interface IBreakpoint {

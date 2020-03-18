@@ -1,9 +1,9 @@
+/// <reference types="./editor/monaco" />
 import { Breakpoints } from "./breakpoints";
 import { IDebugConnection } from "./debugConnection";
 import { Protocol } from "./protocol";
 import { DebugProtocol } from "vscode-debugprotocol";
 import { Renderer } from "./debugRender";
-import * as monaco from "monaco-editor-core";
 import { MessageUtil } from "./messageUtil";
 import { DebugEvents } from "./events";
 import { ThreadWatcher } from "./serverState";

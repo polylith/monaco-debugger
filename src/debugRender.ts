@@ -1,5 +1,5 @@
+/// <reference types="./editor/monaco" />
 import { DebugProtocol } from "vscode-debugprotocol";
-import * as monaco from "monaco-editor-core";
 import { DebugEvents, IButtonEvents } from "./events";
 
 // TODO: Add custom styling by export interface for styling
@@ -24,6 +24,7 @@ interface IStyle {
     filter?: string;
     transform?: string;
     "white-space"?: string;
+    "box-sizing"?: string;
 }
 
 export interface IThemeStyle {
@@ -95,10 +96,11 @@ class Styles {
     static drawerHead: IStyle = {
         background: "#3e3e3e",
         color: "white",
-        width: "calc(100% - 40px)",
+        width: "100%",
         padding: "5px 20px",
         margin: "0px",
         "font-size": "14px",
+        "box-sizing": "border-box"
     };
     static drawerContent: IStyle = {
         background: "#1e1e1e",
@@ -134,27 +136,27 @@ class Media {
 
 const globalstyle = `
 /* width */
-::-webkit-scrollbar {
+.drawer-content::-webkit-scrollbar {
   width: 5px;
 }
 
 /* Track */
-::-webkit-scrollbar-track {
+.drawer-content::-webkit-scrollbar-track {
   background: #1e1e1e; 
   border-radius: 10px;
 }
  
 /* Handle */
-::-webkit-scrollbar-thumb {
+.drawer-content::-webkit-scrollbar-thumb {
   background: #3e3e3e; 
 }
 
 /* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
+.drawer-content::-webkit-scrollbar-thumb:hover {
   background: #4e4e4e; 
 }
 
-::-webkit-scrollbar-corner {
+.drawer-content::-webkit-scrollbar-corner {
     background: #1e1e1e;
 }
 .noselect {
@@ -165,6 +167,18 @@ const globalstyle = `
           -ms-user-select: none; /* Internet Explorer/Edge */
               user-select: none; /* Non-prefixed version, currently
                                     supported by Chrome and Opera */
+}
+.breakpoints {
+	background: red;
+    width: 8px !important;
+    height: 8px !important;
+    left: 5px !important;
+    top: 5px;
+    border-radius: 4px;
+}
+.myContentClass {
+    border:1px solid rgba(240,230,140, 0.7);
+    background: rgba(240,230,140, 0.1);
 }
 `;
 
@@ -182,6 +196,7 @@ export class Renderer {
         this.events = events;
         this.domElement.innerHTML = "";
         document.head.appendChild(this.renderElement("style", undefined, globalstyle));
+        this.domElement.setAttribute("style", this.domElement.getAttribute("style") + "background: #1e1e1e");
         if (theme) this.theme = theme;
         const wrapper = this.renderElement("div", "float: left; width: calc( 100% - 4px);");
         const border = this.renderElement("div", "float: left; width: 4px; height: 100%; cursor: w-resize; background: #3e3e3e;");
@@ -440,12 +455,14 @@ export class Renderer {
     }
 
     resizeVertical(event: MouseEvent, element: HTMLElement) {
-        const dx = event.y - element.offsetTop;
+        const box: DOMRect = element.getBoundingClientRect();
+        const dx = event.y - box.top;
         element.style.height = dx - 10 + "px";
     }
 
     resizeHorizontal(event: MouseEvent, element: HTMLElement) {
-        const dx = event.x - element.offsetLeft;
+        const box: DOMRect = element.getBoundingClientRect();
+        const dx = event.x - box.left;
         element.style.width = dx - 10 + "px";
     }
 
