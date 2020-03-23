@@ -1,3 +1,4 @@
+/// <reference types="./editor/monaco" />
 import { DebugEvents, IButtonEvents } from "./events";
 
 export interface IDebugShortcuts {
@@ -17,13 +18,15 @@ export class Shortcuts {
         breakpoint: "ctrl + shift + 66",
     };
     events: DebugEvents;
+    private editor: monaco.editor.IStandaloneCodeEditor;
     eventFunction: (event: KeyboardEvent) => void = this.keyEvent.bind(this); // Needed to disable the listener
 
-    constructor(events: DebugEvents, shortcuts?: IDebugShortcuts) {
+    constructor(events: DebugEvents, editor: monaco.editor.IStandaloneCodeEditor, shortcuts?: IDebugShortcuts) {
         this.events = events;
         if (shortcuts) {
             this.shortcuts = shortcuts;
         }
+        this.editor = editor;
     }
 
     changeShortcuts(shortcuts: IDebugShortcuts) {
@@ -56,7 +59,11 @@ export class Shortcuts {
                 if (!event.metaKey) {
                     event.preventDefault();
                 }
-                this.events.process("button", action as keyof IButtonEvents);
+                if (action === "breakpoint"){
+                    this.events.process("button", action as keyof IButtonEvents, undefined, this.editor.getPosition()?.lineNumber);
+                }
+                else
+                    this.events.process("button", action as keyof IButtonEvents);
             }
         });
     }

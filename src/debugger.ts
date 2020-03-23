@@ -9,8 +9,8 @@ import { DebugEvents } from "./events";
 import { ThreadWatcher } from "./serverState";
 import { Shortcuts, IDebugShortcuts } from "./shortcuts";
 
-export { IDebuggerTheme , ThemeVSLight, ThemeVSDark}
-export { IDebugConnection, WebsocketConnection}
+export { IDebuggerTheme, ThemeVSLight, ThemeVSDark }
+export { IDebugConnection, WebsocketConnection }
 
 export default class Debugger {
     public breakpoints: Breakpoints;
@@ -24,6 +24,7 @@ export default class Debugger {
     private events: DebugEvents;
     private threads: ThreadWatcher;
     private shortcuts: Shortcuts;
+    private autostart: boolean;
 
     constructor(
         editor: monaco.editor.IStandaloneCodeEditor,
@@ -34,18 +35,20 @@ export default class Debugger {
             language: string;
             shortcuts?: IDebugShortcuts | boolean;
             theme?: IDebuggerTheme;
+            autostart?: boolean;
         }
     ) {
         // Set arguments to attributes
         this.editor = editor;
         this.debugArguments = options.debugArguments;
         this.currentFile = options.currentFile;
+        this.autostart = (options.autostart !== undefined) ? options.autostart : true;
 
         // create all neseccary objects
-        this.breakpoints = new Breakpoints(this.editor, this.currentFile);
         this.protocolProvider = new Protocol(options.language);
         this.events = new DebugEvents();
-        this.shortcuts = new Shortcuts(this.events);
+        this.breakpoints = new Breakpoints(this.editor, this.currentFile, this.events);
+        this.shortcuts = new Shortcuts(this.events, this.editor);
         this.threads = new ThreadWatcher();
         this.renderer = new Renderer(domElement, this.editor, this.events, options.theme);
         this.messageUtil = new MessageUtil(this.events);
@@ -62,9 +65,11 @@ export default class Debugger {
         this.breakpoints.seutpBreakpointAction();
 
         // Define all GUI actions (can't be done in init method, because it is used before init)
-        this.events.on("button", "start", () => {
-            this.run();
-        });
+        if (options.autostart !== false){
+            this.events.on("button", "start", () => {
+                this.run();
+            });
+        }
         this.events.on("button", "stop", () => {
             this.connection?.sendMessage(this.protocolProvider.disconnect());
         });
@@ -168,8 +173,24 @@ export default class Debugger {
         return false;
     }
 
-    public on(type: "resize", listener: (element?: HTMLElement, data?: any) => {}): void{
-        console.log("resizer");
-        this.events.on("button", "resize", listener);
+    public on(type: "button", listener: (element?: HTMLElement, data?: any) => {}): void;
+    public on(type: "resize", listener: (element?: HTMLElement, data?: any) => {}): void;
+    public on(type: "start", listener: (element?: HTMLElement, data?: any) => {}): void;
+    public on(type: "resize" | "button" | "start", listener: (element?: HTMLElement, data?: any) => {}): void {
+        switch (type) {
+            case "resize":
+                this.events.on("button", "resize", listener);
+                break;
+            case "button":
+                this.events.on("button", "all", listener);
+                break;
+            case "start":
+                this.events.on("button", "start", listener);
+                break;
+            default:
+                break;
+        }
     }
+
+
 }

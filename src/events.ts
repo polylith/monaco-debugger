@@ -5,6 +5,8 @@ type ProtocolFunctionArray = ((data?: DebugProtocol.ProtocolMessage) => void)[];
 type ButtonFunctionArray = ((object?: HTMLElement, data?: any) => void)[];
 
 export interface IButtonEvents {
+    breakpoint?: ButtonFunctionArray;
+    all?: ButtonFunctionArray;
     start?: ButtonFunctionArray;
     stop?: ButtonFunctionArray;
     continue?: ButtonFunctionArray;
@@ -133,6 +135,8 @@ export class DebugEvents implements IEvent {
             this.responseEventListeners[responseState]?.forEach((listener) => listener(resp));
         }
         if (type === "button") {
+            if (action as keyof IButtonEvents !== "resize")
+                this.buttonEventListeners["all"]?.forEach((listener) => listener(object, data));
             this.buttonEventListeners[action as keyof IButtonEvents]?.forEach((listener) => listener(object, data));
         }
     }

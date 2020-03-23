@@ -1,5 +1,6 @@
 /// <reference types="./editor/monaco" />
 import { DebugProtocol } from "vscode-debugprotocol";
+import { DebugEvents } from "./events";
 
 export interface IBreakpoint {
     line: number;
@@ -10,10 +11,13 @@ export class Breakpoints {
     private editor: monaco.editor.IStandaloneCodeEditor;
     public breakpoints: IBreakpoint[] = [];
     private currentFile: DebugProtocol.Source;
+    private events: DebugEvents;
 
-    constructor(editor: monaco.editor.IStandaloneCodeEditor, currentFile: DebugProtocol.Source) {
+    constructor(editor: monaco.editor.IStandaloneCodeEditor, currentFile: DebugProtocol.Source, events: DebugEvents) {
         this.editor = editor;
         this.currentFile = currentFile;
+        this.events = events;
+        this.events.on("button", "breakpoint", (object, lineNumber) => this.toggleBreakpoint(lineNumber));
     }
 
     public changeCurrentFile(currentFile: DebugProtocol.Source) {
@@ -43,7 +47,7 @@ export class Breakpoints {
     public seutpBreakpointAction() {
         this.editor.onMouseDown((mouseEvent) => {
             if (mouseEvent.target.type === 2) {
-                this.toggleBreakpoint(mouseEvent.target.position?.lineNumber || -1);
+                this.events.process("button", "breakpoint", undefined, mouseEvent.target.position?.lineNumber || -1);
             }
         });
         this.editor.getModel()?.onDidChangeContent(this.moveBreakpoint.bind(this));
