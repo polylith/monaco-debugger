@@ -23,3 +23,8 @@ export class ThreadWatcher {
         this.threads = [];
     }
 }
+
+export class ServerStates{
+    public disconnectRequest = false;
+    public connected = false;
+}

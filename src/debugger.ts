@@ -6,7 +6,7 @@ import { DebugProtocol } from "vscode-debugprotocol";
 import { Renderer, IDebuggerTheme, ThemeVSLight, ThemeVSDark } from "./debugRender";
 import { MessageUtil } from "./messageUtil";
 import { DebugEvents } from "./events";
-import { ThreadWatcher } from "./serverState";
+import { ThreadWatcher, ServerStates } from "./serverState";
 import { Shortcuts, IDebugShortcuts } from "./shortcuts";
 
 export { IDebuggerTheme, ThemeVSLight, ThemeVSDark }
@@ -25,6 +25,7 @@ export default class Debugger {
     private threads: ThreadWatcher;
     private shortcuts: Shortcuts;
     private autostart: boolean;
+    private serverStates: ServerStates;
 
     constructor(
         editor: monaco.editor.IStandaloneCodeEditor,
@@ -50,6 +51,7 @@ export default class Debugger {
         this.breakpoints = new Breakpoints(this.editor, this.currentFile, this.events);
         this.shortcuts = new Shortcuts(this.events, this.editor);
         this.threads = new ThreadWatcher();
+        this.serverStates = new ServerStates();
         this.renderer = new Renderer(domElement, this.editor, this.events, options.theme);
         this.messageUtil = new MessageUtil(this.events);
 
@@ -65,13 +67,14 @@ export default class Debugger {
         this.breakpoints.seutpBreakpointAction();
 
         // Define all GUI actions (can't be done in init method, because it is used before init)
-        if (options.autostart !== false){
+        if (options.autostart !== false) {
             this.events.on("button", "start", () => {
                 this.run();
             });
         }
         this.events.on("button", "stop", () => {
             this.connection?.sendMessage(this.protocolProvider.disconnect());
+            this.serverStates.disconnectRequest = true;
         });
         this.events.on("button", "stepOver", () => {
             this.connection?.sendMessage(this.protocolProvider.next(this.threads.getCurrentThreadId()));
@@ -137,13 +140,16 @@ export default class Debugger {
             this.renderer.renderVariablesToDrawer("<b>VARIABLES</b>", variables.body.variables);
         });
         this.events.on("response", "disconnect", () => {
+            this.serverStates.disconnectRequest = false;
+            this.serverStates.connected = false;
             this.renderer.renderStopLine(-1);
             this.renderer.updateToolbox("stop");
             this.renderer.renderVariablesToDrawer("<b>VARIABLES</b>", []);
             this.renderer.renderStackFramesToDrawer("<b>CALL STACK</b>", []);
         });
         this.events.on("event", "terminated", () => {
-            this.connection?.sendMessage(this.protocolProvider.disconnect());
+            if (!this.serverStates.disconnectRequest && this.serverStates.connected)
+                this.connection?.sendMessage(this.protocolProvider.disconnect());
         });
         this.events.on("event", "thread", (event) => {
             const thread = event as DebugProtocol.ThreadEvent;
@@ -168,6 +174,7 @@ export default class Debugger {
             this.connection.connect();
             // Send initialize message.
             this.connection.sendMessage(this.protocolProvider.init());
+            this.serverStates.connected = true;
             return true;
         }
         return false;

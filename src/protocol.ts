@@ -106,4 +106,8 @@ export class Protocol {
     public continue(threadId: number): string {
         return this.requestMessage("continue", { threadId });
     }
+
+    public terminate(restart = false){
+        return this.requestMessage("terminate", {restart: restart})
+    }
 }
