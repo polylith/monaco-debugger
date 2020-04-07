@@ -13,7 +13,7 @@ export class MessageUtil {
 
     public handleVariablesMessage(data: string): DebugProtocol.VariablesResponse[] {
         const result: DebugProtocol.VariablesResponse[] = [];
-        this.getProtocolMessages(data).forEach((message) => {
+        MessageUtil.getProtocolMessages(data).forEach((message) => {
             if ((message as DebugProtocol.Response).command === "variables") {
                 result.push(message as DebugProtocol.VariablesResponse);
             } else {
@@ -51,11 +51,11 @@ export class MessageUtil {
 
     // decode a raw message and trigger all events
     handleMessageFromString(data: string): void {
-        this.handleMessage(this.getProtocolMessages(data));
+        this.handleMessage(MessageUtil.getProtocolMessages(data));
     }
 
     // Returns the encoded (objectified) ProtocolMessages from a raw message
-    getProtocolMessages(data: string): DebugProtocol.ProtocolMessage[] {
+    static getProtocolMessages(data: string): DebugProtocol.ProtocolMessage[] {
         const result: DebugProtocol.ProtocolMessage[] = [];
         this.getMessagesFromData(data).forEach((message) => {
             result.push(JSON.parse(message) as DebugProtocol.ProtocolMessage);
@@ -67,7 +67,7 @@ export class MessageUtil {
     // Message format:
     // Content-Length: xx \r\n\r\n
     // {'json-message': 42}
-    private getMessagesFromData(data: string): string[] {
+    static getMessagesFromData(data: string): string[] {
         const messages: string[] = [];
         while (data.length > 20) {
             const header: string = data.split(DOUBLE_CLRF)[0];

@@ -66,7 +66,7 @@ export default class Debugger {
         // Setup the breakpoint click handler
         this.breakpoints.seutpBreakpointAction();
 
-        // Define all GUI actions (can't be done in init method, because it is used before init)
+        // Define all GUI actions
         if (options.autostart !== false) {
             this.events.on("button", "start", () => {
                 this.run();
@@ -97,8 +97,10 @@ export default class Debugger {
             this.connection?.sendMessage(
                 this.protocolProvider.disconnect(),
                 () => this.connection?.sendMessage(this.protocolProvider.init()),
-                false
+                false,
+                ["disconnect", "terminated"]
             );
+            this.serverStates.connected = true;
         });
         this.events.on("button", "continue", () => {
             this.connection?.sendMessage(this.protocolProvider.continue(this.threads.getCurrentThreadId()));
@@ -140,6 +142,7 @@ export default class Debugger {
             this.renderer.renderVariablesToDrawer("<b>VARIABLES</b>", variables.body.variables);
         });
         this.events.on("response", "disconnect", () => {
+            console.log("disconnected")
             this.serverStates.disconnectRequest = false;
             this.serverStates.connected = false;
             this.renderer.renderStopLine(-1);
@@ -170,7 +173,7 @@ export default class Debugger {
 
     // Starts the debugging
     public run(): boolean {
-        if (this.connection != null) {
+        if (this.connection != null && this.serverStates.connected !== true) {
             this.connection.connect();
             // Send initialize message.
             this.connection.sendMessage(this.protocolProvider.init());
