@@ -202,5 +202,7 @@ export default class Debugger {
         }
     }
 
-
+    public setTheme(theme: IDebuggerTheme){
+        this.renderer.setTheme(theme);
+    }
 }

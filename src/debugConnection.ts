@@ -15,7 +15,7 @@ export class WebsocketConnection implements IDebugConnection {
     private websocket: Promise<WebSocket> | null = null;
     private messageListener: (data: string) => void;
     private exitListener: (() => void) | null = null;
-    private messageCallback: { callback: (data: any) => void; allowListeners: boolean, waitUntil?: string[] } | null = null;
+    private messageCallback: { callback: (data: any) => void; allowListeners: boolean; waitUntil?: string[] } | null = null;
 
     constructor(adress: string) {
         this.adress = adress;
@@ -41,7 +41,7 @@ export class WebsocketConnection implements IDebugConnection {
             if (this.messageCallback.waitUntil) {
                 console.log("waitUntil", this.messageCallback.waitUntil);
                 callback = false;
-                let protocolMessages = MessageUtil.getProtocolMessages(ev.data);
+                const protocolMessages = MessageUtil.getProtocolMessages(ev.data);
                 protocolMessages.forEach(message => {
                     console.log(message);
                     if (message.type == "response" && this.messageCallback?.waitUntil?.includes((message as DebugProtocol.Response).command)){
