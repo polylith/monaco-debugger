@@ -44,7 +44,7 @@ export class Breakpoints {
     }
 
     // Editor actions
-    public seutpBreakpointAction() {
+    public setupBreakpointAction() {
         this.editor.onMouseDown((mouseEvent) => {
             if (mouseEvent.target.type === 2) {
                 this.events.process("button", "breakpoint", undefined, mouseEvent.target.position?.lineNumber || -1);
