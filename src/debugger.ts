@@ -64,7 +64,7 @@ export default class Debugger {
         }
 
         // Setup the breakpoint click handler
-        this.breakpoints.seutpBreakpointAction();
+        this.breakpoints.setupBreakpointAction();
 
         // Define all GUI actions
         if (options.autostart !== false) {
